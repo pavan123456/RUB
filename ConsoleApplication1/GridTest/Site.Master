@@ -1,0 +1,351 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="GridTest.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - My ASP.NET Application</title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <style type="text/css">
+        .DataGridFixedHeader { BACKGROUND: url(Images/grid_header.jpg) repeat-x; POSITION: relative; TOP: expression(this.offsetParent.scrollTop); HEIGHT: 27px }
+	</style>
+	
+    <script type="text/javascript">    
+        var TotalChkBx;
+        var Counter;
+       
+        window.onload = function()
+        {            
+            TotalChkBx = parseInt('<%= this.GridView3.Rows.Count %>');           
+            Counter = 0;
+        }
+        
+        function SelectAll(CheckBox)
+        {            
+            var TargetBaseControl = document.getElementById('<%= this.GridView3.ClientID %>');
+            var TargetChildControl = "chkselect";  
+            var Inputs = TargetBaseControl.getElementsByTagName("input");
+            for(var n = 0; n < Inputs.length; ++n)
+                if(Inputs[n].type == 'checkbox' && Inputs[n].id.indexOf(TargetChildControl,0) >= 0)
+                     Inputs[n].checked = CheckBox.checked;
+            Counter = CheckBox.checked ? TotalChkBx : 0;
+        }
+        
+        function ChildClick(CheckBox, HCheckBox)
+        {        
+            var HeaderCheckBox = document.getElementById(HCheckBox);
+            if(CheckBox.checked && Counter < TotalChkBx)
+                Counter++;
+            else if(Counter > 0) 
+                Counter--;
+            if(Counter < TotalChkBx)
+                HeaderCheckBox.checked = false;
+            else if(Counter == TotalChkBx)
+                HeaderCheckBox.checked = true;
+        }         
+    
+   </script> 
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="respond" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+         <div>
+        &nbsp;<table width="100%">
+            <tr>
+                <td align="center">
+                    <strong><span style="color: #ff0066; text-decoration: underline">
+                    A simple grid with Auto Generate Fileds with Export to Word, Excel and Pdf</span></strong></td>
+                
+            </tr>
+            <tr>
+                <td align="center">
+        <asp:GridView ID="GridView1" runat="server" CellPadding="4" ForeColor="#333333" GridLines="None" Width="75%">
+            <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+            <RowStyle BackColor="#EFF3FB" />
+            <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" />
+            <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
+            <HeaderStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+            <EditRowStyle BackColor="#2461BF" />
+            <AlternatingRowStyle BackColor="White" />
+        </asp:GridView>
+        </td>
+               
+            </tr>
+            <tr>
+                <td align="center">
+                    <asp:Button ID="btnword" runat="server" OnClick="btnword_Click" Text="Export to Word" />
+                    <asp:Button ID="btnexcel" runat="server" OnClick="btnexcel_Click" Text="Export to Excel" />
+                    <asp:Button ID="btnpdf" runat="server" OnClick="btnpdf_Click" Text="Export to PDF" /></td>
+            </tr>
+            <tr>
+                <td align="center">
+                </td>
+            </tr>
+            <tr>
+                <td style="height: 21px" align="center">
+                    <span style="color: #ff0066; text-decoration: underline"><strong>
+                    BoundFields with Paging and Sorting</strong></span></td>
+               
+            </tr>
+            <tr>
+                <td align="center">
+                    <asp:GridView ID="GridView2" runat="server" AllowPaging="True" AllowSorting="True"
+                        AutoGenerateColumns="False" CellPadding="3" DataKeyNames="id"
+                        GridLines="Horizontal" OnPageIndexChanging="GridView2_PageIndexChanging" PageSize="2"
+                        Width="75%" OnSorting="GridView2_Sorting" BackColor="White" BorderColor="#E7E7FF" BorderStyle="None" BorderWidth="1px">
+                        <FooterStyle BackColor="#B5C7DE" ForeColor="#4A3C8C" />
+                        <RowStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" />
+                        <Columns>
+                            <asp:BoundField DataField="name" HeaderText="Person Name" SortExpression="name" />
+                            <asp:BoundField DataField="gender" HeaderText="Gender" SortExpression="gender" />
+                            <asp:BoundField DataField="email" HeaderText="Email Id" SortExpression="email" />
+                            <asp:BoundField DataField="Salary" HeaderText="Salary" SortExpression="salary" />
+                        </Columns>
+                        <PagerStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" HorizontalAlign="Right" />
+                        <SelectedRowStyle BackColor="#738A9C" Font-Bold="True" ForeColor="#F7F7F7" />
+                        <HeaderStyle BackColor="#4A3C8C" Font-Bold="True" ForeColor="#F7F7F7" />
+                        <AlternatingRowStyle BackColor="#F7F7F7" />
+                    </asp:GridView>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <span style="color: #ff0066; text-decoration: underline"><strong>
+                    GridView with Header,
+                        Footer, Insert, Update and Delete</strong></span></td>
+            </tr>
+            <tr>
+                <td align="center">                
+                    <asp:GridView ID="GridView3" runat="server" AutoGenerateColumns="False" CellPadding="2"
+                        ForeColor="Black" GridLines="None" Width="75%" DataKeyNames="id" OnRowDeleting="GridView3_RowDeleting" OnRowEditing="GridView3_RowEditing" OnRowUpdating="GridView3_RowUpdating" OnRowDataBound="GridView3_RowDataBound" ShowFooter="True" BackColor="LightGoldenrodYellow" BorderColor="Tan" BorderWidth="1px" OnRowCreated="GridView3_RowCreated">
+                        <FooterStyle BackColor="Tan" />
+                        <Columns>
+                            <asp:TemplateField>
+                                <HeaderTemplate>
+                                    <asp:CheckBox ID="chkheader" runat="server" onclick="javascript:SelectAll(this);" />
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                    <asp:CheckBox ID="chkselect" runat="server" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Person Name">
+                                <EditItemTemplate>
+                                    <asp:TextBox ID="txtname" runat="server" Text='<%# Bind("name") %>'></asp:TextBox>
+                                </EditItemTemplate>
+                                <ItemTemplate>
+                                    <asp:Label ID="lblname" runat="server" Text='<%# Bind("name") %>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Gender">
+                                <EditItemTemplate>
+                                    <asp:DropDownList ID="ddlgender" runat="server" Text='<%# Bind("gender") %>'>
+                                        <asp:ListItem>Male</asp:ListItem>
+                                        <asp:ListItem>Female</asp:ListItem>
+                                    </asp:DropDownList>
+                                </EditItemTemplate>
+                                <ItemTemplate>
+                                    <asp:Label ID="lblgender" runat="server" Text='<%# Bind("gender") %>'></asp:Label>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Email Id">
+                                <EditItemTemplate>
+                                    <asp:TextBox ID="txtemail" runat="server" Text='<%# Bind("email") %>'></asp:TextBox>
+                                </EditItemTemplate>
+                                <ItemTemplate>
+                                    <asp:Label ID="lblemail" runat="server" Text='<%# Bind("email") %>'></asp:Label>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    <asp:Label ID="Label1" runat="server" Text="Total Salary"></asp:Label>
+                                </FooterTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Salary">
+                                <EditItemTemplate>
+                                    <asp:TextBox ID="txtsalary" runat="server" Text='<%# Bind("salary") %>'></asp:TextBox>
+                                </EditItemTemplate>
+                                <ItemTemplate>
+                                    <asp:Label ID="lblsalary" runat="server" Text='<%# Bind("salary") %>'></asp:Label>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    <asp:Label ID="lblfooter" runat="server"></asp:Label>
+                                </FooterTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Edit/Update">
+                                <EditItemTemplate>
+                                    <asp:ImageButton ID="Image2" runat="server" ImageUrl="~/Images/icon-floppy.gif" CommandName="edit" />
+                                </EditItemTemplate>
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="Image1" runat="server" ImageUrl="~/Images/icon-pencil.gif" CommandName="update" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Delete">
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="Image3" runat="server" ImageUrl="~/Images/icon-delete.gif" CommandName="delete" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <PagerStyle BackColor="PaleGoldenrod" ForeColor="DarkSlateBlue" HorizontalAlign="Center" />
+                        <SelectedRowStyle BackColor="DarkSlateBlue" ForeColor="GhostWhite" />
+                        <HeaderStyle BackColor="Tan" Font-Bold="True" />
+                        <AlternatingRowStyle BackColor="PaleGoldenrod" />
+                    </asp:GridView>                    
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <span style="color: #ff0066; text-decoration: underline"><strong>
+                    GridView inside GridView</strong></span></td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <asp:GridView ID="GridView4" runat="server" AutoGenerateColumns="False" BackColor="#DEBA84"
+                        BorderColor="#DEBA84" BorderStyle="None" BorderWidth="1px" CellPadding="3" CellSpacing="2" OnRowDataBound="GridView4_RowDataBound" Width="75%">
+                        <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
+                        <RowStyle BackColor="#FFF7E7" ForeColor="#8C4510" />
+                        <Columns>
+                            <asp:BoundField DataField="name" HeaderText="Person Name" />
+                            <asp:BoundField DataField="email" HeaderText="Email Id" />
+                            <asp:TemplateField HeaderText="Programming Languages">
+                                <ItemTemplate>
+                                    <asp:GridView ID="GridView5" runat="server" AutoGenerateColumns="False" BackColor="#DEBA84"
+                                        BorderColor="#DEBA84" BorderStyle="None" BorderWidth="1px" CellPadding="3" CellSpacing="2"
+                                        Width="100%">
+                                        <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
+                                        <RowStyle BackColor="#FFF7E7" ForeColor="#8C4510" />
+                                        <Columns>
+                                            <asp:BoundField DataField="id" HeaderText="Id" />
+                                            <asp:BoundField DataField="Language" HeaderText="Programming Languages" />
+                                        </Columns>
+                                        <PagerStyle ForeColor="#8C4510" HorizontalAlign="Center" />
+                                        <SelectedRowStyle BackColor="#738A9C" Font-Bold="True" ForeColor="White" />
+                                        <HeaderStyle BackColor="#A55129" Font-Bold="True" ForeColor="White" />
+                                    </asp:GridView>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <PagerStyle ForeColor="#8C4510" HorizontalAlign="Center" />
+                        <SelectedRowStyle BackColor="#738A9C" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#A55129" Font-Bold="True" ForeColor="White" />
+                    </asp:GridView>
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <strong><span style="color: #ff0066; text-decoration: underline">GridView Images display
+                        and View in Another Page</span></strong></td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <asp:GridView ID="GridView6" runat="server" AutoGenerateColumns="False" CellPadding="4"
+                        ForeColor="#333333" GridLines="None" Width="75%" DataKeyNames="id" OnRowCommand="GridView6_RowCommand">
+                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                        <RowStyle BackColor="#EFF3FB" />
+                        <Columns>
+                            <asp:BoundField DataField="name" HeaderText="Person Name" />
+                            <asp:BoundField DataField="email" HeaderText="Email Id" />
+                            <asp:TemplateField HeaderText="Image">
+                                <ItemTemplate>
+                                    <asp:Image ID="Image4" runat="server" ImageUrl='<%# "Pics\\" + DataBinder.Eval(Container.DataItem,"image") %>'  />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="View">
+                                <ItemTemplate>
+                                    <asp:ImageButton ID="ImageButton1" runat="server" ImageUrl="~/Images/view.gif" CommandName="view" CommandArgument='<%# Bind("id") %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                        <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" />
+                        <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
+                        <HeaderStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                        <EditRowStyle BackColor="#2461BF" />
+                        <AlternatingRowStyle BackColor="White" />
+                    </asp:GridView>
+                </td>
+            </tr>
+        </table>
+    
+    </div>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" runat="server" href="~/">Application name</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a runat="server" href="~/">Home</a></li>
+                        <li><a runat="server" href="~/About">About</a></li>
+                        <li><a runat="server" href="~/Contact">Contact</a></li>
+                    </ul>
+                    <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <AnonymousTemplate>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a runat="server" href="~/Account/Register">Register</a></li>
+                                <li><a runat="server" href="~/Account/Login">Log in</a></li>
+                            </ul>
+                        </AnonymousTemplate>
+                        <LoggedInTemplate>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>
+                                <li>
+                                    <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                                </li>
+                            </ul>
+                        </LoggedInTemplate>
+                    </asp:LoginView>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <footer>
+                <p>&copy; <%: DateTime.Now.Year %> - My ASP.NET Application</p>
+            </footer>
+        </div>
+    </form>
+</body>
+</html>
